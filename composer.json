@@ -4,17 +4,25 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/dbal": "^3",
+        "doctrine/doctrine-bundle": "^2.14",
+        "doctrine/doctrine-migrations-bundle": "^3.4",
+        "doctrine/orm": "^3.3",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.4.*",
+        "symfony/messenger": "6.4.*",
+        "symfony/monolog-bundle": "^3.10",
         "symfony/runtime": "6.4.*",
+        "symfony/uid": "6.4.*",
         "symfony/yaml": "6.4.*"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.75"
     },
     "config": {
         "allow-plugins": {
@@ -26,7 +34,9 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\Common\\": "src/Common",
+            "App\\User\\": "src/User",
+            "App\\WorkEntry\\": "src/WorkEntry"
         }
     },
     "autoload-dev": {
@@ -44,6 +54,7 @@
         "symfony/polyfill-php81": "*"
     },
     "scripts": {
+        "start":  "make",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"

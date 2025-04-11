@@ -1,24 +1,86 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
 services:
-    # default configuration for services in *this* file
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+  _defaults:
+    autowire: true
+    autoconfigure: true
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    App\:
-        resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+  App\Common\Infrastructure\Symfony\Controller\:
+    resource: '../src/Common/Infrastructure/Symfony/Controller/'
+    exclude: '../src/Common/Infrastructure/Symfony/Controller/{Meta.php,CollectionResponse.php}'
+    tags: [ 'controller.service_arguments' ]
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+  App\User\Infrastructure\Symfony\Controller\:
+    resource: '../src/User/Infrastructure/Symfony/Controller/'
+    exclude: '../src/User/Infrastructure/Symfony/Controller/{Meta.php,CollectionResponse.php}'
+    tags: [ 'controller.service_arguments' ]
+
+  # Commands
+  ## Command Handlers
+  App\Common\Application\Handler\:
+    resource: '../src/Common/Application/Handler/*'
+    exclude:
+      - '../src/Common/Application/Handler/{Handler.php}'
+      - '../src/Common/Application/Handler/*/Exception'
+    tags: [ 'app.command_handler' ]
+
+  App\User\Application\Handler\:
+    resource: '../src/User/Application/Handler/*'
+    exclude:
+      - '../src/User/Application/Handler/*/Exception'
+    tags: [ 'app.command_handler' ]
+
+  ## Middlewares
+#  App\Application\CommandBus\Middleware\DummyMiddleware:
+#    tags: [ { name: 'app.command_middleware', priority: 10 } ]
+#
+#  App\Infrastructure\CommandBus\Middleware\PriorityDummyMiddleware:
+#    tags: [ { name: 'app.command_middleware', priority: 11 } ]
+#
+#  App\Infrastructure\CommandBus\Middleware\LoggingMiddleware:
+#    tags: [ { name: 'app.command_middleware', priority: 1 } ]
+
+  ## Command Bus
+  App\Common\Application\CommandBus\CommandBusInterface:
+    class: App\Common\Infrastructure\CommandBus\CommandBus
+    tags:
+      - { name: 'container.preload', class: 'App\Common\Infrastructure\CommandBus\CommandBus' }
+
+  # /Commands
+
+  # Events
+  ## Event Bus
+  App\Common\Application\EventBus\EventBusInterface:
+    class: App\Common\Infrastructure\EventBus\EventBus
+    tags:
+      - { name: 'container.preload', class: 'App\Common\Infrastructure\EventBus\EventBus' }
+
+  # /Events
+
+  # Repositories
+  Doctrine\ORM\EntityManagerInterface:
+    alias: 'doctrine.orm.default_entity_manager'
+    public: false
+
+  ## User
+  App\User\Domain\Repository\UserRepositoryInterface: '@App\User\Infrastructure\Doctrine\Repository\UserRepository'
+  App\User\Infrastructure\Doctrine\Repository\UserRepository:
+    arguments:
+      $entityManager: '@Doctrine\ORM\EntityManagerInterface'
+
+  # /Repositories
+
+  # Services
+  App\Common\Application\Service\:
+    resource: '../src/Common/Application/Service/'
+
+  App\User\Application\Service\:
+    resource: '../src/User/Application/Service/'
+
+  # / Services
+
+  # Event Listeners
+  App\Common\Infrastructure\Symfony\EventListener\ExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception }
+  # / Event Listeners

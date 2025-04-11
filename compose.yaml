@@ -1,0 +1,35 @@
+services:
+  # Symfony App Container
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "${APP_NAME:-symfony}-app"
+    ports:
+      # Local port => container port
+      - "${DOCKER_APP_PORT:-8000}:8000"
+    depends_on:
+      - mysql
+    environment:
+      # Symfony-specific environment variables
+      APP_ENV: "${APP_ENV:-dev}"
+      APP_SECRET: "${APP_SECRET:-ChangeMeInProd}"
+      DATABASE_URL: "mysql://${DOCKER_MYSQL_USER:-symfony}:${DOCKER_MYSQL_PASSWORD:-secret}@mysql:3306/${DOCKER_MYSQL_DATABASE:-symfony_db}?serverVersion=8.3"
+
+  # MySQL Container
+  mysql:
+    image: mysql:8.3
+    container_name: "${APP_NAME:-symfony}-mysql"
+    ports:
+      - "${DOCKER_MYSQL_PORT:-3306}:3306"
+    environment:
+      MYSQL_DATABASE: "${DOCKER_MYSQL_DATABASE:-symfony_db}"
+      MYSQL_USER: "${DOCKER_MYSQL_USER:-symfony}"
+      MYSQL_PASSWORD: "${DOCKER_MYSQL_PASSWORD:-secret}"
+      MYSQL_ROOT_PASSWORD: "${DOCKER_MYSQL_ROOT_PASSWORD:-rootsecret}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+

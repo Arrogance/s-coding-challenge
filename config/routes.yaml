@@ -1,5 +1,17 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+common_controllers:
+  resource:
+    path: ../src/Common/Infrastructure/Symfony/Controller/
+    namespace: App\Common\Infrastructure\Symfony\Controller
+  type: attribute
+
+user_controllers:
+  resource:
+    path: ../src/User/Infrastructure/Symfony/Controller/
+    namespace: App\User\Infrastructure\Symfony\Controller
+  type: attribute
+
+work_entry_controllers:
+  resource:
+    path: ../src/WorkEntry/Infrastructure/Symfony/Controller/
+    namespace: App\WorkEntry\Infrastructure\Symfony\Controller
+  type: attribute
