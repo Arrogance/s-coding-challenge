@@ -21,5 +21,5 @@ interface WorkEntryRepositoryInterface
     /**
      * @return iterable<WorkEntry>
      */
-    public function findPaginated(int $offset, int $limit): iterable;
+    public function findPaginated(UserId $userId, int $offset, int $limit): iterable;
 }

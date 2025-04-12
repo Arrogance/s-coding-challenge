@@ -33,37 +33,37 @@ class WorkEntry
         ));
     }
 
-    public function getId(): WorkEntryId
+    public function id(): WorkEntryId
     {
         return $this->id;
     }
 
-    public function getUserId(): UserId
+    public function userId(): UserId
     {
         return $this->userId;
     }
 
-    public function getStartDate(): \DateTimeImmutable
+    public function startDate(): \DateTimeImmutable
     {
         return $this->startDate;
     }
 
-    public function getEndDate(): \DateTimeImmutable
+    public function endDate(): \DateTimeImmutable
     {
         return $this->endDate;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function createdAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): \DateTimeImmutable
+    public function updatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function getDeletedAt(): ?\DateTimeImmutable
+    public function deletedAt(): ?\DateTimeImmutable
     {
         return $this->deletedAt;
     }
@@ -73,28 +73,7 @@ class WorkEntry
         return null !== $this->deletedAt;
     }
 
-    public function updateDates(\DateTimeImmutable $start, \DateTimeImmutable $end): void
-    {
-        $this->startDate = $start;
-        $this->endDate = $end;
-        $this->touch();
-        // Optionally: $this->recordEvent(new WorkEntryUpdated(...));
-    }
-
-    public function delete(): void
-    {
-        $this->deletedAt = new \DateTimeImmutable();
-        $this->touch();
-        // $this->recordEvent(new WorkEntryDeleted(...));
-    }
-
-    public function restore(): void
-    {
-        $this->deletedAt = null;
-        $this->touch();
-    }
-
-    private function touch(): void
+    protected function update(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
     }

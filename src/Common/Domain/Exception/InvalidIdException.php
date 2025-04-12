@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Common\Domain\Exception;
 
-class InvalidUserIdException extends DomainException
+class InvalidIdException extends DomainException
 {
     public function __construct(
         ?string $value = null,

@@ -51,9 +51,11 @@ final class WorkEntryRepository extends DoctrineBaseRepository implements WorkEn
                     ->getOneOrNullResult();
     }
 
-    public function findPaginated(int $offset, int $limit): iterable
+    public function findPaginated(UserId $userId, int $offset, int $limit): iterable
     {
         return $this->createActiveQueryBuilder()
+                    ->andWhere('w.userId = :userId')
+                    ->setParameter('userId', $userId, UserIdType::NAME)
                     ->setFirstResult($offset)
                     ->setMaxResults($limit)
                     ->getQuery()

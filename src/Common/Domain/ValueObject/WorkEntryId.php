@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Common\Domain\ValueObject;
 
-use App\Common\Domain\Exception\InvalidUserIdException;
+use App\Common\Domain\Exception\InvalidIdException;
 use Symfony\Component\Uid\Uuid;
 
 final readonly class WorkEntryId
@@ -13,7 +13,7 @@ final readonly class WorkEntryId
         private string $uuid
     ) {
         if (!Uuid::isValid($this->uuid)) {
-            throw new InvalidUserIdException();
+            throw new InvalidIdException($this->uuid);
         }
     }
 

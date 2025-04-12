@@ -9,12 +9,14 @@ services:
 
   App\Common\Infrastructure\Symfony\Controller\:
     resource: '../src/Common/Infrastructure/Symfony/Controller/'
-    exclude: '../src/Common/Infrastructure/Symfony/Controller/{Meta.php,CollectionResponse.php}'
     tags: [ 'controller.service_arguments' ]
 
   App\User\Infrastructure\Symfony\Controller\:
     resource: '../src/User/Infrastructure/Symfony/Controller/'
-    exclude: '../src/User/Infrastructure/Symfony/Controller/{Meta.php,CollectionResponse.php}'
+    tags: [ 'controller.service_arguments' ]
+
+  App\WorkEntry\Infrastructure\Symfony\Controller\:
+    resource: '../src/WorkEntry/Infrastructure/Symfony/Controller/'
     tags: [ 'controller.service_arguments' ]
 
   # Commands
