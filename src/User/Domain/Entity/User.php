@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\User\Domain\Entity;
 
+use App\Common\Contract\Event\UserWorkEntryCreatedEvent;
 use App\Common\Domain\Event\RecordDomainEvents;
 use App\Common\Domain\ValueObject\UserId;
+use App\Common\Domain\ValueObject\WorkEntryId;
 use App\User\Domain\Event\UserCreated;
 use App\User\Domain\ValueObject\Email;
 use App\User\Domain\ValueObject\Password;
@@ -79,6 +81,18 @@ class User
     public function deletedAt(): ?\DateTimeImmutable
     {
         return $this->deletedAt;
+    }
+
+    public function workEntry(WorkEntryId $id, \DateTimeImmutable $start, \DateTimeImmutable $end): void
+    {
+        $this->recordEvent(
+            new UserWorkEntryCreatedEvent(
+                $id->value(),
+                $this->id->value(),
+                $start,
+                $end
+            )
+        );
     }
 
     public function delete(): void

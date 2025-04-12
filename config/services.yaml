@@ -32,6 +32,12 @@ services:
       - '../src/User/Application/Handler/*/Exception'
     tags: [ 'app.command_handler' ]
 
+  App\WorkEntry\Application\Handler\:
+    resource: '../src/WorkEntry/Application/Handler/*'
+    exclude:
+      - '../src/WorkEntry/Application/Handler/*/Exception'
+    tags: [ 'app.command_handler' ]
+
   ## Middlewares
 #  App\Application\CommandBus\Middleware\DummyMiddleware:
 #    tags: [ { name: 'app.command_middleware', priority: 10 } ]
@@ -57,6 +63,17 @@ services:
     tags:
       - { name: 'container.preload', class: 'App\Common\Infrastructure\EventBus\EventBus' }
 
+  # Async Default Subscriber
+  App\Common\Application\Subscriber\AsyncEventSubscriber:
+    arguments:
+      $eventBus: '@App\Common\Application\EventBus\EventBusInterface'
+    tags:
+      - { name: messenger.message_handler }
+
+  # Subscribers
+  App\WorkEntry\Application\Subscriber\UserWorkEntryCreatedSubscriber:
+    tags: [ 'app.event_subscriber' ]
+  ##
   # /Events
 
   # Repositories
@@ -67,6 +84,12 @@ services:
   ## User
   App\User\Domain\Repository\UserRepositoryInterface: '@App\User\Infrastructure\Doctrine\Repository\UserRepository'
   App\User\Infrastructure\Doctrine\Repository\UserRepository:
+    arguments:
+      $entityManager: '@Doctrine\ORM\EntityManagerInterface'
+
+  ## WorkEntry
+  App\WorkEntry\Domain\Repository\WorkEntryRepositoryInterface: '@App\WorkEntry\Infrastructure\Doctrine\Repository\WorkEntryRepository'
+  App\WorkEntry\Infrastructure\Doctrine\Repository\WorkEntryRepository:
     arguments:
       $entityManager: '@Doctrine\ORM\EntityManagerInterface'
 

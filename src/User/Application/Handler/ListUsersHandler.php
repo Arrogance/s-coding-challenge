@@ -9,7 +9,7 @@ use App\Common\Application\Handler\Handler;
 use App\User\Application\Command\ListUsersCommand;
 use App\User\Domain\Repository\UserRepositoryInterface;
 
-class ListUsersHandler extends Handler
+final class ListUsersHandler extends Handler
 {
     public function __construct(private readonly UserRepositoryInterface $userRepository)
     {

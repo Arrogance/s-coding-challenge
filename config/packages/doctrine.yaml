@@ -5,6 +5,7 @@ doctrine:
     use_savepoints: true
     types:
       user_id: App\Common\Infrastructure\Doctrine\Type\UserIdType
+      work_entry_id: App\Common\Infrastructure\Doctrine\Type\WorkEntryIdType
       user_email: App\User\Infrastructure\Doctrine\Type\EmailType
       user_password: App\User\Infrastructure\Doctrine\Type\PasswordType
   orm:

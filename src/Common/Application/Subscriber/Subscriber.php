@@ -15,6 +15,6 @@ abstract class Subscriber
 
     public function register(EventBusInterface $eventBus): void
     {
-        $eventBus->register($this);
+        $eventBus->registerSubscribers($this);
     }
 }

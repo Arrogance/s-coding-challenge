@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace App\Common\Infrastructure\Doctrine\Type;
 
-use App\Common\Domain\ValueObject\UserId;
+use App\Common\Domain\ValueObject\WorkEntryId;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\Uid\Uuid;
 
-final class UserIdType extends Type
+final class WorkEntryIdType extends Type
 {
-    public const string NAME = 'user_id';
+    public const string NAME = 'work_entry_id';
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'BINARY(16)';
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?UserId
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?WorkEntryId
     {
         if (null === $value) {
             return null;
@@ -27,7 +27,7 @@ final class UserIdType extends Type
         // Symfony UID binary -> string
         $uuid = Uuid::fromBinary($value)->toRfc4122();
 
-        return new UserId($uuid);
+        return new WorkEntryId($uuid);
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string

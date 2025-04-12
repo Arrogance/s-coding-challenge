@@ -10,7 +10,7 @@ use App\Common\Domain\ValueObject\UserId;
 use App\User\Application\Command\GetUserCommand;
 use App\User\Domain\Repository\UserRepositoryInterface;
 
-class GetUserHandler extends Handler
+final class GetUserHandler extends Handler
 {
     public function __construct(private readonly UserRepositoryInterface $userRepository)
     {

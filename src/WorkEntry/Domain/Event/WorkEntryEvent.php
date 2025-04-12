@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\WorkEntry\Domain\Event;
 
 use App\Common\Domain\Event\Event;
-use App\WorkEntry\Domain\ValueObject\WorkEntryId;
+use App\Common\Domain\ValueObject\WorkEntryId;
 
 abstract class WorkEntryEvent extends Event
 {

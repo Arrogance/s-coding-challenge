@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\Application\Handler;
 
 use App\Common\Application\Command\Command;
+use App\Common\Application\EventBus\EventBusInterface;
 use App\Common\Application\Handler\Handler;
 use App\Common\Application\Security\TokenManagerInterface;
 use App\User\Application\Command\LoginCommand;
@@ -13,12 +14,13 @@ use App\User\Domain\Exception\InvalidCredentialsException;
 use App\User\Domain\Repository\UserRepositoryInterface;
 use App\User\Domain\ValueObject\Email;
 
-class LoginHandler extends Handler
+final class LoginHandler extends Handler
 {
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
         private readonly PasswordHasherService $hasher,
-        private readonly TokenManagerInterface $tokenManager
+        private readonly TokenManagerInterface $tokenManager,
+        private readonly EventBusInterface $eventBus,
     ) {
     }
 
@@ -28,6 +30,10 @@ class LoginHandler extends Handler
 
         if (!$user || !$this->hasher->verify($command->password, $user->password())) {
             throw new InvalidCredentialsException();
+        }
+
+        foreach ($user->pullDomainEvents() as $event) {
+            $this->eventBus->dispatch($event);
         }
 
         return $this->tokenManager->generateToken($user->id()->value());

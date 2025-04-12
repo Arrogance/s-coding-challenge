@@ -10,11 +10,17 @@ services:
       - "${DOCKER_APP_PORT:-8000}:8000"
     depends_on:
       - mysql
-    environment:
-      # Symfony-specific environment variables
-      APP_ENV: "${APP_ENV:-dev}"
-      APP_SECRET: "${APP_SECRET:-ChangeMeInProd}"
-      DATABASE_URL: "mysql://${DOCKER_MYSQL_USER:-symfony}:${DOCKER_MYSQL_PASSWORD:-secret}@mysql:3306/${DOCKER_MYSQL_DATABASE:-symfony_db}?serverVersion=8.3"
+
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "${APP_NAME:-symfony}-consumer"
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - valkey
+    entrypoint: [ "php", "bin/console", "messenger:consume", "async", "-vv", "--memory-limit=64M" ]
 
   # MySQL Container
   mysql:
@@ -29,6 +35,12 @@ services:
       MYSQL_ROOT_PASSWORD: "${DOCKER_MYSQL_ROOT_PASSWORD:-rootsecret}"
     volumes:
       - mysql_data:/var/lib/mysql
+
+  valkey:
+    image: valkey/valkey:8
+    container_name: "${APP_NAME:-symfony}-valkey"
+    ports:
+      - "${DOCKER_VALKEY_PORT:-6379}:6379"
 
 volumes:
   mysql_data:

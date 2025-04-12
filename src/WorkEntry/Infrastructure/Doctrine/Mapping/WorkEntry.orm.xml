@@ -5,7 +5,7 @@
 
     <entity name="App\WorkEntry\Domain\Entity\WorkEntry" table="work_entries">
 
-        <id name="id" type="uuid" column="id"/>
+        <id name="id" type="work_entry_id" column="id"/>
 
         <field name="userId" type="user_id" column="user_id"/>
 

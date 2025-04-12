@@ -44,6 +44,9 @@ migrations:
 style:
 	@$(DC_RUN_PHP) env XDEBUG_MODE=off PHP_CS_FIXER_IGNORE_ENV=true vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --using-cache=no -vvv
 
+logs:
+	@$(DC_RUN_PHP) tail -f var/log/dev.log
+
 phpunit:
 	@$(DC_RUN_PHP) env XDEBUG_MODE=off bin/phpunit tests
 

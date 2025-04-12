@@ -6,8 +6,8 @@ namespace App\WorkEntry\Domain\Entity;
 
 use App\Common\Domain\Event\RecordDomainEvents;
 use App\Common\Domain\ValueObject\UserId;
+use App\Common\Domain\ValueObject\WorkEntryId;
 use App\WorkEntry\Domain\Event\WorkEntryCreated;
-use App\WorkEntry\Domain\ValueObject\WorkEntryId;
 
 class WorkEntry
 {
@@ -17,7 +17,7 @@ class WorkEntry
     private ?\DateTimeImmutable $deletedAt = null;
 
     public function __construct(
-        private readonly WorkEntryId $id, // or use a WorkEntryId VO
+        private readonly WorkEntryId $id,
         private readonly UserId $userId,
         private \DateTimeImmutable $startDate,
         private \DateTimeImmutable $endDate,
