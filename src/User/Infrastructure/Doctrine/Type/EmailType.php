@@ -10,11 +10,11 @@ use Doctrine\DBAL\Types\Type;
 
 final class EmailType extends Type
 {
-    public const string NAME = 'email';
+    public const string NAME = 'user_email';
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getVarcharTypeDeclarationSQL($column);
+        return $platform->getStringTypeDeclarationSQL($column);
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?Email

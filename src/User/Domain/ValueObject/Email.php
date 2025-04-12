@@ -8,12 +8,17 @@ use App\User\Domain\Exception\InvalidEmailException;
 
 final readonly class Email
 {
-    public function __construct(
-        private string $value
-    ) {
-        if (!filter_var($value, \FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidEmailException($this->value);
+    private string $value;
+
+    public function __construct(string $value)
+    {
+        $normalized = mb_strtolower($value); // lowercase (UTF-8 safe)
+
+        if (!filter_var($normalized, \FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidEmailException($value);
         }
+
+        $this->value = $normalized;
     }
 
     public function value(): string
@@ -23,6 +28,6 @@ final readonly class Email
 
     public function __toString(): string
     {
-        return $this->value();
+        return $this->value;
     }
 }

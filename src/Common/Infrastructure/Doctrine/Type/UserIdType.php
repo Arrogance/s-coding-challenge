@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 
 final class UserIdType extends Type
 {
-    public const NAME = 'user_id';
+    public const string NAME = 'user_id';
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {

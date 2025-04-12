@@ -1,4 +1,6 @@
 parameters:
+  jwt_token_secret: '%env(APP_JWT_TOKEN_SECRET)%'
+  jwt_token_ttl: '%env(resolve:int:APP_JWT_TOKEN_TTL)%'
 
 services:
   _defaults:
@@ -71,9 +73,6 @@ services:
   # /Repositories
 
   # Services
-  App\Common\Application\Service\:
-    resource: '../src/Common/Application/Service/'
-
   App\User\Application\Service\:
     resource: '../src/User/Application/Service/'
 
@@ -84,3 +83,12 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.exception }
   # / Event Listeners
+
+  # Security
+  ## TokenManager
+  App\Common\Application\Security\TokenManagerInterface: '@App\Common\Infrastructure\Security\JwtManager'
+  App\Common\Infrastructure\Security\JwtManager:
+    arguments:
+      - '%jwt_token_secret%'
+      - '%jwt_token_ttl%'
+

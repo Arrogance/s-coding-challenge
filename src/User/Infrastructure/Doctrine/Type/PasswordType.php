@@ -10,11 +10,11 @@ use Doctrine\DBAL\Types\Type;
 
 final class PasswordType extends Type
 {
-    public const string NAME = 'password';
+    public const string NAME = 'user_password';
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getVarcharTypeDeclarationSQL($column);
+        return $platform->getStringTypeDeclarationSQL($column);
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?Password

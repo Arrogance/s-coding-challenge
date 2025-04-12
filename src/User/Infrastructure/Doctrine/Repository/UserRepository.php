@@ -6,10 +6,12 @@ namespace App\User\Infrastructure\Doctrine\Repository;
 
 use App\Common\Domain\ValueObject\UserId;
 use App\Common\Infrastructure\Doctrine\DoctrineBaseRepository;
+use App\Common\Infrastructure\Doctrine\Type\UserIdType;
 use App\User\Domain\Entity\User;
 use App\User\Domain\Exception\UserNotFoundException;
 use App\User\Domain\Repository\UserRepositoryInterface;
 use App\User\Domain\ValueObject\Email;
+use App\User\Infrastructure\Doctrine\Type\EmailType;
 use Doctrine\ORM\QueryBuilder;
 
 final class UserRepository extends DoctrineBaseRepository implements UserRepositoryInterface
@@ -36,7 +38,7 @@ final class UserRepository extends DoctrineBaseRepository implements UserReposit
     {
         $qb = $this->createActiveQueryBuilder()
                    ->andWhere('u.id = :id')
-                   ->setParameter('id', $id, 'user_id');
+                   ->setParameter('id', $id, UserIdType::NAME);
 
         $user = $qb->getQuery()->getOneOrNullResult();
 
@@ -49,11 +51,17 @@ final class UserRepository extends DoctrineBaseRepository implements UserReposit
 
     public function findByEmail(Email $email): ?User
     {
-        return $this->createActiveQueryBuilder()
+        $user = $this->createActiveQueryBuilder()
                     ->andWhere('u.email = :email')
-                    ->setParameter('email', $email, 'user_email')
+                    ->setParameter('email', $email, EmailType::NAME)
                     ->getQuery()
                     ->getOneOrNullResult();
+
+        if (null === $user) {
+            throw new UserNotFoundException($email->value());
+        }
+
+        return $user;
     }
 
     public function findPaginated(int $offset, int $limit): iterable
