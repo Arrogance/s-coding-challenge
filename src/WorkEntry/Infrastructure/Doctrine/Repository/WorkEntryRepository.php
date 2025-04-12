@@ -28,7 +28,7 @@ final class WorkEntryRepository extends DoctrineBaseRepository implements WorkEn
 
     public function delete(WorkEntry $workEntry): void
     {
-        $workEntry->delete();
+//        $workEntry->delete();
         $this->entityManager->persist($workEntry);
         $this->entityManager->flush();
     }
