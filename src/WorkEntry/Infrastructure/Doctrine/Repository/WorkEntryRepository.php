@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\WorkEntry\Infrastructure\Doctrine\Repository;
 
 use App\Common\Domain\ValueObject\UserId;
-use App\Common\Domain\ValueObject\WorkEntryId;
 use App\Common\Infrastructure\Doctrine\DoctrineBaseRepository;
 use App\Common\Infrastructure\Doctrine\Type\UserIdType;
-use App\Common\Infrastructure\Doctrine\Type\WorkEntryIdType;
 use App\WorkEntry\Domain\Entity\WorkEntry;
 use App\WorkEntry\Domain\Repository\WorkEntryRepositoryInterface;
+use App\WorkEntry\Domain\ValueObject\WorkEntryId;
+use App\WorkEntry\Infrastructure\Doctrine\Type\WorkEntryIdType;
 use Doctrine\ORM\QueryBuilder;
 
 final class WorkEntryRepository extends DoctrineBaseRepository implements WorkEntryRepositoryInterface
@@ -28,16 +28,18 @@ final class WorkEntryRepository extends DoctrineBaseRepository implements WorkEn
 
     public function delete(WorkEntry $workEntry): void
     {
-//        $workEntry->delete();
+        //        $workEntry->delete();
         $this->entityManager->persist($workEntry);
         $this->entityManager->flush();
     }
 
-    public function findById(WorkEntryId $id): ?WorkEntry
+    public function findById(UserId $userId, WorkEntryId $id): ?WorkEntry
     {
         return $this->createActiveQueryBuilder()
                     ->andWhere('w.id = :id')
+                    ->andWhere('w.userId = :userId')
                     ->setParameter('id', $id, WorkEntryIdType::NAME)
+                    ->setParameter('userId', $userId, UserIdType::NAME)
                     ->getQuery()
                     ->getOneOrNullResult();
     }
@@ -56,6 +58,7 @@ final class WorkEntryRepository extends DoctrineBaseRepository implements WorkEn
         return $this->createActiveQueryBuilder()
                     ->andWhere('w.userId = :userId')
                     ->setParameter('userId', $userId, UserIdType::NAME)
+                    ->orderBy('w.startDate', 'DESC')
                     ->setFirstResult($offset)
                     ->setMaxResults($limit)
                     ->getQuery()

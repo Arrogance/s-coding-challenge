@@ -8,27 +8,31 @@ use App\Common\Application\Command\Command;
 use App\Common\Application\EventBus\EventBusInterface;
 use App\Common\Application\Handler\Handler;
 use App\Common\Domain\ValueObject\UserId;
-use App\WorkEntry\Application\Command\CreateWorkEntryCommand;
+use App\WorkEntry\Application\Command\UpdateWorkEntryCommand;
 use App\WorkEntry\Domain\Entity\WorkEntry;
 use App\WorkEntry\Domain\Repository\WorkEntryRepositoryInterface;
 use App\WorkEntry\Domain\ValueObject\WorkEntryId;
 
-final class CreateWorkEntryHandler extends Handler
+class UpdateWorkEntryHandler extends Handler
 {
     public function __construct(
         private readonly WorkEntryRepositoryInterface $workEntryRepository,
-        private readonly EventBusInterface $eventBus,
+        private readonly EventBusInterface $eventBus
     ) {
     }
 
-    public function handle(Command|CreateWorkEntryCommand $command): WorkEntry
+    public function handle(Command|UpdateWorkEntryCommand $command): WorkEntry
     {
-        $workEntry = new WorkEntry(
-            WorkEntryId::generate(),
-            new UserId($command->userId),
-            $command->startDate,
-            $command->endDate
+        $userId = new UserId($command->userId);
+        $workEntryId = new WorkEntryId($command->id);
+
+        $workEntry = $this->workEntryRepository->findById(
+            userId: $userId,
+            id: $workEntryId
         );
+
+        $workEntry->setStartDate($command->startDate);
+        $workEntry->setEndDate($command->endDate);
 
         $this->workEntryRepository->save($workEntry);
 
@@ -41,6 +45,6 @@ final class CreateWorkEntryHandler extends Handler
 
     public static function getHandledCommand(): string
     {
-        return CreateWorkEntryCommand::class;
+        return UpdateWorkEntryCommand::class;
     }
 }

@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\User\Infrastructure\Symfony\Controller;
+namespace App\WorkEntry\Infrastructure\Symfony\Controller;
 
 use App\Common\Application\CommandBus\CommandBusInterface;
 use App\Common\Infrastructure\Attribute\RequireAuth;
 use App\Common\Infrastructure\Exception\InvalidRequestException;
-use App\User\Application\Command\CreateWorkEntryCommand;
+use App\WorkEntry\Application\Command\CreateWorkEntryCommand;
+use App\WorkEntry\Application\Response\WorkEntryResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/users/{id}/work-entries', name: 'user_create_work_entry', methods: ['POST'])]
+#[Route('work-entries', name: 'work_entry_create', methods: ['POST'])]
 #[RequireAuth]
 readonly class CreateWorkEntryController
 {
@@ -20,9 +21,10 @@ readonly class CreateWorkEntryController
     {
     }
 
-    public function __invoke(Request $request, string $id): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+        $userId = $request->attributes->get('userId');
 
         if (!\is_array($data)) {
             throw new InvalidRequestException('Invalid JSON payload.');
@@ -45,11 +47,11 @@ readonly class CreateWorkEntryController
             throw new InvalidRequestException('Start date must be before end date.');
         }
 
-        $command = new CreateWorkEntryCommand($id, $start, $end);
-        $workEntryId = $this->commandBus->send($command);
+        $command = new CreateWorkEntryCommand($userId, $start, $end);
+        $workEntry = $this->commandBus->send($command);
 
         return new JsonResponse([
-            'work_entry_id' => $workEntryId,
-        ], 202);
+            WorkEntryResponse::fromEntity($workEntry),
+        ], 201);
     }
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Infrastructure\Doctrine\Type;
+namespace App\WorkEntry\Infrastructure\Doctrine\Type;
 
-use App\Common\Domain\ValueObject\WorkEntryId;
+use App\WorkEntry\Domain\ValueObject\WorkEntryId;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\Uid\Uuid;

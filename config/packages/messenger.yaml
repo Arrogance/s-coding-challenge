@@ -13,7 +13,7 @@ framework:
         dsn: 'doctrine://default'
 
     routing:
-      'App\Common\Contract\Event\UserWorkEntryCreatedEvent': async
+      'App\Common\Domain\Event\UserDeletedEvent': async
 
 # when@test:
 #    framework:

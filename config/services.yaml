@@ -107,6 +107,10 @@ services:
   App\Common\Infrastructure\Symfony\EventListener\ExceptionListener:
     tags:
       - { name: kernel.event_listener, event: kernel.exception }
+
+  App\Common\Infrastructure\Symfony\EventListener\AuthRequestListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller }
   # / Event Listeners
 
   # Security

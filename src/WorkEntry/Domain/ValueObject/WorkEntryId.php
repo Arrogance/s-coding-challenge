@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Domain\ValueObject;
+namespace App\WorkEntry\Domain\ValueObject;
 
 use App\Common\Domain\Exception\InvalidIdException;
 use Symfony\Component\Uid\Uuid;

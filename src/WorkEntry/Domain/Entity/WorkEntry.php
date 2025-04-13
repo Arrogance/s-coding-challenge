@@ -6,8 +6,9 @@ namespace App\WorkEntry\Domain\Entity;
 
 use App\Common\Domain\Event\RecordDomainEvents;
 use App\Common\Domain\ValueObject\UserId;
-use App\Common\Domain\ValueObject\WorkEntryId;
 use App\WorkEntry\Domain\Event\WorkEntryCreated;
+use App\WorkEntry\Domain\Event\WorkEntryDeleted;
+use App\WorkEntry\Domain\ValueObject\WorkEntryId;
 
 class WorkEntry
 {
@@ -48,9 +49,21 @@ class WorkEntry
         return $this->startDate;
     }
 
+    public function setStartDate(\DateTimeImmutable $startDate): void
+    {
+        $this->startDate = $startDate;
+        $this->update();
+    }
+
     public function endDate(): \DateTimeImmutable
     {
         return $this->endDate;
+    }
+
+    public function setEndDate(\DateTimeImmutable $endDate): void
+    {
+        $this->endDate = $endDate;
+        $this->update();
     }
 
     public function createdAt(): \DateTimeImmutable
@@ -71,6 +84,18 @@ class WorkEntry
     public function isDeleted(): bool
     {
         return null !== $this->deletedAt;
+    }
+
+    public function delete(): void
+    {
+        $this->deletedAt = new \DateTimeImmutable();
+        $this->update();
+
+        $this->recordEvent(new WorkEntryDeleted(
+            id: $this->id->value(),
+            userId: $this->userId->value(),
+            deletedAt: $this->deletedAt,
+        ));
     }
 
     protected function update(): void

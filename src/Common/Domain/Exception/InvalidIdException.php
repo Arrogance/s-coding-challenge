@@ -11,7 +11,7 @@ class InvalidIdException extends DomainException
         int $code = 0,
         ?\Throwable $previous = null
     ) {
-        $message = 'Provided User Id is not a valid UUID';
+        $message = 'Provided Id is not a valid UUID';
         if (null !== $value) {
             $message .= ": $value";
         }

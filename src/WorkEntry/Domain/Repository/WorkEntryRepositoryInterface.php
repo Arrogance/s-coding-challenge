@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\WorkEntry\Domain\Repository;
 
 use App\Common\Domain\ValueObject\UserId;
-use App\Common\Domain\ValueObject\WorkEntryId;
 use App\WorkEntry\Domain\Entity\WorkEntry;
+use App\WorkEntry\Domain\ValueObject\WorkEntryId;
 
 interface WorkEntryRepositoryInterface
 {
@@ -14,7 +14,7 @@ interface WorkEntryRepositoryInterface
 
     public function delete(WorkEntry $workEntry): void;
 
-    public function findById(WorkEntryId $id): ?WorkEntry;
+    public function findById(UserId $userId, WorkEntryId $id): ?WorkEntry;
 
     public function findByUser(UserId $userId): ?WorkEntry;
 

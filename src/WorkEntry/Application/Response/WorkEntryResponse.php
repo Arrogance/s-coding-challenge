@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\WorkEntry\Application\Response;
 
 use App\Common\Application\Response\Response;
-use App\User\Domain\Entity\User;
 use App\WorkEntry\Domain\Entity\WorkEntry;
 
 final class WorkEntryResponse extends Response
@@ -27,7 +26,7 @@ final class WorkEntryResponse extends Response
             id: $entity->id()->value(),
             userId: $entity->userId()->value(),
             startDate: $entity->startDate()->format(\DATE_ATOM),
-            endDate:  $entity->endDate()->format(\DATE_ATOM),
+            endDate: $entity->endDate()->format(\DATE_ATOM),
             createdAt: $entity->createdAt()->format(\DATE_ATOM),
             updatedAt: $entity->updatedAt()->format(\DATE_ATOM)
         );
@@ -37,7 +36,7 @@ final class WorkEntryResponse extends Response
     {
         return [
             'id' => $this->id,
-            'userId' => $this->userId,
+            'user_id' => $this->userId,
             'start_date' => $this->startDate,
             'end_date' => $this->endDate,
             'created_at' => $this->createdAt,

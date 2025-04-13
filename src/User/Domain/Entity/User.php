@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\User\Domain\Entity;
 
-use App\Common\Contract\Event\UserWorkEntryCreatedEvent;
 use App\Common\Domain\Event\RecordDomainEvents;
+use App\Common\Domain\Event\UserDeletedEvent;
 use App\Common\Domain\ValueObject\UserId;
-use App\Common\Domain\ValueObject\WorkEntryId;
-use App\User\Domain\Event\UserCreated;
+use App\User\Domain\Event\UserCreatedEvent;
 use App\User\Domain\ValueObject\Email;
 use App\User\Domain\ValueObject\Password;
 
@@ -26,8 +25,13 @@ class User
         private Password $password,
         private readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
-        $this->updatedAt = new \DateTimeImmutable();
-        $this->recordEvent(new UserCreated($this->id, $this->name, $this->email));
+        $this->update();
+        $this->recordEvent(new UserCreatedEvent(
+            id: $this->id->value(),
+            name: $this->name,
+            email: $this->email->value(),
+            createdAt: $this->createdAt->format(\DATE_ATOM),
+        ));
     }
 
     public function id(): UserId
@@ -83,30 +87,18 @@ class User
         return $this->deletedAt;
     }
 
-    public function workEntry(WorkEntryId $id, \DateTimeImmutable $start, \DateTimeImmutable $end): void
-    {
-        $this->recordEvent(
-            new UserWorkEntryCreatedEvent(
-                $id->value(),
-                $this->id->value(),
-                $start,
-                $end
-            )
-        );
-    }
-
     public function delete(): void
     {
         $this->deletedAt = new \DateTimeImmutable();
         $this->update();
-        //        $this->recordEvent(new UserDeleted($this->id));
-    }
 
-    public function restore(): void
-    {
-        $this->deletedAt = null;
-        $this->update();
-        //        $this->recordEvent(new UserRestored($this->id));
+        $event = new UserDeletedEvent(
+            id: $this->id->value(),
+            deletedAt: $this->deletedAt->format(\DATE_ATOM),
+        );
+        $event->markAsAsynchronous();
+
+        $this->recordEvent($event);
     }
 
     protected function update(): void
