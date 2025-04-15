@@ -1,11 +1,19 @@
-.PHONY: all build build-no-cache up stop down bash install update migrations style phpunit phpunit-coverage setup-api-tests test-api
-
-# Paths and flags
-COMPOSE_FILE = compose.yaml:compose.override.yaml
-PROJECT_NAME := $(shell grep -m 1 '^APP_NAME=' .env | cut -d '=' -f2)
+.PHONY: all build build-no-cache up stop down bash install update migrations style phpunit phpunit-coverage setup-api-tests test-api logs phpunit-dev
 
 # Docker Compose commands
-DC_CMD     = COMPOSE_FILE=$(COMPOSE_FILE) docker compose -p $(PROJECT_NAME)
+COMPOSE_FILE = compose.yaml:compose.override.yaml
+
+# Select env file: .env.local takes precedence
+ENV_FILE := .env
+ifeq ($(wildcard .env.local), .env.local)
+  ENV_FILE := .env.local
+endif
+
+# Extract project name from env file
+PROJECT_NAME := $(shell grep -m 1 '^APP_NAME=' $(ENV_FILE) | cut -d '=' -f2)
+
+# Docker Compose command
+DC_CMD     = COMPOSE_FILE=$(COMPOSE_FILE) docker compose -p $(PROJECT_NAME) --env-file $(ENV_FILE)
 DC_RUN_PHP = $(DC_CMD) exec --user 1000:33 app
 
 # Default target
@@ -47,6 +55,7 @@ style:
 logs:
 	@$(DC_RUN_PHP) tail -f var/log/dev.log
 
+# Tests
 phpunit:
 	@$(DC_RUN_PHP) env XDEBUG_MODE=off APP_ENV=test vendor/bin/phpunit tests
 
