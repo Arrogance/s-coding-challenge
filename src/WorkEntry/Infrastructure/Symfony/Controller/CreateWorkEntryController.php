@@ -50,8 +50,6 @@ readonly class CreateWorkEntryController
         $command = new CreateWorkEntryCommand($userId, $start, $end);
         $workEntry = $this->commandBus->send($command);
 
-        return new JsonResponse([
-            WorkEntryResponse::fromEntity($workEntry),
-        ], 201);
+        return new JsonResponse(WorkEntryResponse::fromEntity($workEntry), 201);
     }
 }
