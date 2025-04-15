@@ -1,8 +1,5 @@
 .PHONY: all build build-no-cache up stop down bash install update migrations style phpunit phpunit-coverage setup-api-tests test-api logs phpunit-dev
 
-# Docker Compose commands
-COMPOSE_FILE = compose.yaml:compose.override.yaml
-
 # Select env file: .env.local takes precedence
 ENV_FILE := .env
 ifeq ($(wildcard .env.local), .env.local)
@@ -13,6 +10,7 @@ endif
 PROJECT_NAME := $(shell grep -m 1 '^APP_NAME=' $(ENV_FILE) | cut -d '=' -f2)
 
 # Docker Compose command
+COMPOSE_FILE = compose.yaml:compose.override.yaml
 DC_CMD     = COMPOSE_FILE=$(COMPOSE_FILE) docker compose -p $(PROJECT_NAME) --env-file $(ENV_FILE)
 DC_RUN_PHP = $(DC_CMD) exec --user 1000:33 app
 
@@ -47,7 +45,7 @@ update:
 	@$(DC_RUN_PHP) env XDEBUG_MODE=off composer update
 
 migrations:
-	@$(DC_RUN_PHP) env XDEBUG_MODE=off bin/console doctrine:schema:update --force --complete
+	@$(DC_RUN_PHP) env XDEBUG_MODE=off bin/console doctrine:migrations:migrate --no-interaction
 
 style:
 	@$(DC_RUN_PHP) env XDEBUG_MODE=off PHP_CS_FIXER_IGNORE_ENV=true vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --using-cache=no -vvv
