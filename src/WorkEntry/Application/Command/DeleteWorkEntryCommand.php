@@ -6,7 +6,7 @@ namespace App\WorkEntry\Application\Command;
 
 use App\Common\Application\Command\Command;
 
-class DeleteWorkEntryCommand extends Command
+final class DeleteWorkEntryCommand extends Command
 {
     public function __construct(
         public readonly string $id,

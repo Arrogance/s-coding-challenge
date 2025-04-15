@@ -10,9 +10,9 @@ use App\WorkEntry\Domain\ValueObject\WorkEntryId;
 
 interface WorkEntryRepositoryInterface
 {
-    public function save(WorkEntry $workEntry): void;
+    public function save(WorkEntry $workEntry, bool $flush = true): void;
 
-    public function delete(WorkEntry $workEntry): void;
+    public function delete(WorkEntry $workEntry, bool $flush = true): void;
 
     public function findById(UserId $userId, WorkEntryId $id): ?WorkEntry;
 
@@ -22,4 +22,12 @@ interface WorkEntryRepositoryInterface
      * @return iterable<WorkEntry>
      */
     public function findPaginated(UserId $userId, int $offset, int $limit): iterable;
+
+    public function iterateActiveByUser(UserId $userId, int $batchSize = 100): \Generator;
+
+    public function beginTransaction(): void;
+
+    public function commit(): void;
+
+    public function rollback(): void;
 }

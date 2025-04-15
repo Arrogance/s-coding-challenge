@@ -6,7 +6,7 @@ namespace App\WorkEntry\Application\Command;
 
 use App\Common\Application\Command\Command;
 
-class GetWorkEntryCommand extends Command
+final class GetWorkEntryCommand extends Command
 {
     public function __construct(
         public readonly string $id,

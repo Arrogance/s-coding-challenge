@@ -65,17 +65,17 @@ services:
     tags:
       - { name: 'container.preload', class: 'App\Common\Infrastructure\EventBus\EventBus' }
 
-  # Async Default Subscriber
+  ## Subscribers
+  ### Async Default Subscriber
   App\Common\Application\Subscriber\AsyncEventSubscriber:
     arguments:
       $eventBus: '@App\Common\Application\EventBus\EventBusInterface'
     tags:
       - { name: messenger.message_handler }
 
-  # Subscribers
-  App\WorkEntry\Application\Subscriber\UserWorkEntryCreatedSubscriber:
+  App\WorkEntry\Application\Subscriber\UserDeletedEventSubscriber:
     tags: [ 'app.event_subscriber' ]
-  ##
+
   # /Events
 
   # Repositories

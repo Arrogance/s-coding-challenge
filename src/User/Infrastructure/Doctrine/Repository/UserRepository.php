@@ -21,17 +21,21 @@ final class UserRepository extends DoctrineBaseRepository implements UserReposit
         return User::class;
     }
 
-    public function save(User $user): void
+    public function save(User $user, bool $flush = true): void
     {
         $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        if ($flush) {
+            $this->entityManager->flush();
+        }
     }
 
-    public function delete(User $user): void
+    public function delete(User $user, bool $flush = true): void
     {
         $user->delete();
         $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        if ($flush) {
+            $this->entityManager->flush();
+        }
     }
 
     public function findById(UserId $id): ?User
@@ -67,6 +71,7 @@ final class UserRepository extends DoctrineBaseRepository implements UserReposit
     public function findPaginated(int $offset, int $limit): iterable
     {
         return $this->createActiveQueryBuilder()
+                    ->orderBy('u.createdAt', 'DESC')
                     ->setFirstResult($offset)
                     ->setMaxResults($limit)
                     ->getQuery()
@@ -79,5 +84,20 @@ final class UserRepository extends DoctrineBaseRepository implements UserReposit
             ->getRepository(User::class)
             ->createQueryBuilder('u')
             ->where('u.deletedAt IS NULL');
+    }
+
+    public function beginTransaction(): void
+    {
+        $this->entityManager->beginTransaction();
+    }
+
+    public function commit(): void
+    {
+        $this->entityManager->commit();
+    }
+
+    public function rollback(): void
+    {
+        $this->entityManager->rollBack();
     }
 }

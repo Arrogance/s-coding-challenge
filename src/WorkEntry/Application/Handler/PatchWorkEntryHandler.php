@@ -31,11 +31,11 @@ class PatchWorkEntryHandler extends Handler
             id: $workEntryId
         );
 
-        if (null === $command->startDate) {
+        if (null !== $command->startDate) {
             $workEntry->setStartDate($command->startDate);
         }
 
-        if (null === $command->endDate) {
+        if (null !== $command->endDate) {
             $workEntry->setEndDate($command->endDate);
         }
 

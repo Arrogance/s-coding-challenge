@@ -36,11 +36,22 @@ readonly class UpdateWorkEntryController
             }
         }
 
+        try {
+            $start = new \DateTimeImmutable($data['start_date']);
+            $end = new \DateTimeImmutable($data['end_date']);
+        } catch (\DateMalformedStringException $e) {
+            throw new InvalidRequestException("Invalid 'start_date' and 'end_date' provided.", previous: $e);
+        }
+
+        if ($start >= $end) {
+            throw new InvalidRequestException('Start date must be before end date.');
+        }
+
         $command = new UpdateWorkEntryCommand(
             id: $id,
             userId: $userId,
-            startDate: $data['start_date'],
-            endDate: $data['start_date'],
+            startDate: $start,
+            endDate: $end,
         );
 
         $workEntry = $this->commandBus->send($command);

@@ -28,6 +28,7 @@ readonly class DeleteWorkEntryController
         $this->commandBus->send($command);
 
         return new JsonResponse(
+            null,
             204
         );
     }

@@ -41,11 +41,22 @@ readonly class PartialUpdateWorkEntryController
             throw new InvalidRequestException("At least one field must be provided: 'start_date', 'end_date'");
         }
 
+        try {
+            $start = isset($data['start_date']) ? new \DateTimeImmutable($data['start_date']) : null;
+            $end = isset($data['end_date']) ? new \DateTimeImmutable($data['end_date']) : null;
+        } catch (\DateMalformedStringException $e) {
+            throw new InvalidRequestException("Invalid 'start_date' and 'end_date' provided.", previous: $e);
+        }
+
+        if ($start >= $end) {
+            throw new InvalidRequestException('Start date must be before end date.');
+        }
+
         $command = new PatchWorkEntryCommand(
             id: $id,
             userId: $userId,
-            startDate: $data['start_date'] ?? null,
-            endDate: $data['start_date'] ?? null,
+            startDate: $start,
+            endDate: $end,
         );
 
         $workEntry = $this->commandBus->send($command);

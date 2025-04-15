@@ -27,8 +27,14 @@ doctrine:
 when@test:
   doctrine:
     dbal:
-      # "TEST_TOKEN" is typically set by ParaTest
-      dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+      url: '%env(resolve:DATABASE_URL)%'
+      driver: 'pdo_sqlite'
+      charset: UTF8
+      mapping_types:
+        binary: user_id
+      types:
+        user_id: App\Tests\Doctrine\Type\UserIdType
+        work_entry_id: App\Tests\Doctrine\Type\WorkEntryIdType
 
 when@prod:
   doctrine:

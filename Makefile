@@ -1,4 +1,4 @@
-.PHONY: all build build-no-cache up stop down bash install update migrations style phpunit phpunit-coverage
+.PHONY: all build build-no-cache up stop down bash install update migrations style phpunit phpunit-coverage setup-api-tests test-api
 
 # Paths and flags
 COMPOSE_FILE = compose.yaml:compose.override.yaml
@@ -48,7 +48,7 @@ logs:
 	@$(DC_RUN_PHP) tail -f var/log/dev.log
 
 phpunit:
-	@$(DC_RUN_PHP) env XDEBUG_MODE=off bin/phpunit tests
+	@$(DC_RUN_PHP) env XDEBUG_MODE=off APP_ENV=test vendor/bin/phpunit tests
 
-phpunit-coverage:
-	@$(DC_RUN_PHP) env XDEBUG_MODE=coverage bin/phpunit tests
+phpunit-dev:
+	@$(DC_RUN_PHP) env XDEBUG_MODE=off APP_ENV=test vendor/bin/phpunit tests --group dev

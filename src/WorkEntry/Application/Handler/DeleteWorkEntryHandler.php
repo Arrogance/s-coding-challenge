@@ -8,7 +8,7 @@ use App\Common\Application\Command\Command;
 use App\Common\Application\EventBus\EventBusInterface;
 use App\Common\Application\Handler\Handler;
 use App\Common\Domain\ValueObject\UserId;
-use App\WorkEntry\Application\Command\UpdateWorkEntryCommand;
+use App\WorkEntry\Application\Command\DeleteWorkEntryCommand;
 use App\WorkEntry\Domain\Entity\WorkEntry;
 use App\WorkEntry\Domain\Repository\WorkEntryRepositoryInterface;
 use App\WorkEntry\Domain\ValueObject\WorkEntryId;
@@ -21,7 +21,7 @@ class DeleteWorkEntryHandler extends Handler
     ) {
     }
 
-    public function handle(Command|UpdateWorkEntryCommand $command): WorkEntry
+    public function handle(Command|DeleteWorkEntryCommand $command): WorkEntry
     {
         $userId = new UserId($command->userId);
         $workEntryId = new WorkEntryId($command->id);
@@ -44,6 +44,6 @@ class DeleteWorkEntryHandler extends Handler
 
     public static function getHandledCommand(): string
     {
-        return UpdateWorkEntryCommand::class;
+        return DeleteWorkEntryCommand::class;
     }
 }
