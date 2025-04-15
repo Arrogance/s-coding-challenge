@@ -17,7 +17,7 @@ endif
 
 # Docker Compose commands
 DC_CMD     = docker compose $(COMPOSE_FILES) -p $(PROJECT_NAME) --env-file $(ENV_FILE)
-DC_RUN_PHP = $(DC_CMD) exec --user 1000:33 app
+DC_RUN_PHP = $(DC_CMD) exec app
 
 # Default target
 all: build up install migrations
