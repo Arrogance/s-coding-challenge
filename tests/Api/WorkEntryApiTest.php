@@ -74,10 +74,10 @@ class WorkEntryApiTest extends ApiTestCase
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
 
         $entry = $this->getResponseData($response);
-        $this->assertEquals($context['userId'], $entry[0]['user_id']);
+        $this->assertEquals($context['userId'], $entry['user_id']);
 
         return [
-            'entryId' => $entry[0]['id'],
+            'entryId' => $entry['id'],
             'userId' => $context['userId'],
             'token' => $context['token'],
         ];
