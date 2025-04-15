@@ -1,4 +1,4 @@
-Symfony Backend Challenge – User & WorkEntry Management
+Symfony Backend Challenge – User & WorkEntry Management - ![](https://github.com/Arrogance/s-coding-challenge/actions/workflows/phpunit.yml/badge.svg)
 =======================================================
 
 This project is a **backend API built with Symfony 6.4 and PHP 8.4**, following a clean architecture approach using **Domain-Driven Design (DDD)** and **Hexagonal Architecture**. It includes secure authentication, full user and work entry management, and an asynchronous domain event system.
