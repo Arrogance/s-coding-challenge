@@ -9,12 +9,14 @@ services:
 
   App\Common\Infrastructure\Symfony\Controller\:
     resource: '../src/Common/Infrastructure/Symfony/Controller/'
-    exclude: '../src/Common/Infrastructure/Symfony/Controller/{Meta.php,CollectionResponse.php}'
     tags: [ 'controller.service_arguments' ]
 
   App\User\Infrastructure\Symfony\Controller\:
     resource: '../src/User/Infrastructure/Symfony/Controller/'
-    exclude: '../src/User/Infrastructure/Symfony/Controller/{Meta.php,CollectionResponse.php}'
+    tags: [ 'controller.service_arguments' ]
+
+  App\WorkEntry\Infrastructure\Symfony\Controller\:
+    resource: '../src/WorkEntry/Infrastructure/Symfony/Controller/'
     tags: [ 'controller.service_arguments' ]
 
   # Commands
@@ -63,17 +65,17 @@ services:
     tags:
       - { name: 'container.preload', class: 'App\Common\Infrastructure\EventBus\EventBus' }
 
-  # Async Default Subscriber
+  ## Subscribers
+  ### Async Default Subscriber
   App\Common\Application\Subscriber\AsyncEventSubscriber:
     arguments:
       $eventBus: '@App\Common\Application\EventBus\EventBusInterface'
     tags:
       - { name: messenger.message_handler }
 
-  # Subscribers
-  App\WorkEntry\Application\Subscriber\UserWorkEntryCreatedSubscriber:
+  App\WorkEntry\Application\Subscriber\UserDeletedEventSubscriber:
     tags: [ 'app.event_subscriber' ]
-  ##
+
   # /Events
 
   # Repositories
@@ -105,6 +107,10 @@ services:
   App\Common\Infrastructure\Symfony\EventListener\ExceptionListener:
     tags:
       - { name: kernel.event_listener, event: kernel.exception }
+
+  App\Common\Infrastructure\Symfony\EventListener\AuthRequestListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller }
   # / Event Listeners
 
   # Security

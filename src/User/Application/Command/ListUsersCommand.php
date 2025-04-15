@@ -6,7 +6,7 @@ namespace App\User\Application\Command;
 
 use App\Common\Application\Command\Command;
 
-class ListUsersCommand extends Command
+final class ListUsersCommand extends Command
 {
     public function __construct(
         public readonly int $offset,

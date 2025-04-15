@@ -1,11 +1,17 @@
-.PHONY: all build build-no-cache up stop down bash install update migrations style phpunit phpunit-coverage
+.PHONY: all build build-no-cache up stop down bash install update migrations style phpunit phpunit-coverage setup-api-tests test-api logs phpunit-dev
 
-# Paths and flags
+# Select env file: .env.local takes precedence
+ENV_FILE := .env
+ifeq ($(wildcard .env.local), .env.local)
+  ENV_FILE := .env.local
+endif
+
+# Extract project name from env file
+PROJECT_NAME := $(shell grep -m 1 '^APP_NAME=' $(ENV_FILE) | cut -d '=' -f2)
+
+# Docker Compose command
 COMPOSE_FILE = compose.yaml:compose.override.yaml
-PROJECT_NAME := $(shell grep -m 1 '^APP_NAME=' .env | cut -d '=' -f2)
-
-# Docker Compose commands
-DC_CMD     = COMPOSE_FILE=$(COMPOSE_FILE) docker compose -p $(PROJECT_NAME)
+DC_CMD     = COMPOSE_FILE=$(COMPOSE_FILE) docker compose -p $(PROJECT_NAME) --env-file $(ENV_FILE)
 DC_RUN_PHP = $(DC_CMD) exec --user 1000:33 app
 
 # Default target
@@ -39,7 +45,7 @@ update:
 	@$(DC_RUN_PHP) env XDEBUG_MODE=off composer update
 
 migrations:
-	@$(DC_RUN_PHP) env XDEBUG_MODE=off bin/console doctrine:schema:update --force --complete
+	@$(DC_RUN_PHP) env XDEBUG_MODE=off bin/console doctrine:migrations:migrate --no-interaction
 
 style:
 	@$(DC_RUN_PHP) env XDEBUG_MODE=off PHP_CS_FIXER_IGNORE_ENV=true vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --using-cache=no -vvv
@@ -47,8 +53,9 @@ style:
 logs:
 	@$(DC_RUN_PHP) tail -f var/log/dev.log
 
+# Tests
 phpunit:
-	@$(DC_RUN_PHP) env XDEBUG_MODE=off bin/phpunit tests
+	@$(DC_RUN_PHP) env XDEBUG_MODE=off APP_ENV=test vendor/bin/phpunit tests
 
-phpunit-coverage:
-	@$(DC_RUN_PHP) env XDEBUG_MODE=coverage bin/phpunit tests
+phpunit-dev:
+	@$(DC_RUN_PHP) env XDEBUG_MODE=off APP_ENV=test vendor/bin/phpunit tests --group dev

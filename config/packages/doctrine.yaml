@@ -5,7 +5,7 @@ doctrine:
     use_savepoints: true
     types:
       user_id: App\Common\Infrastructure\Doctrine\Type\UserIdType
-      work_entry_id: App\Common\Infrastructure\Doctrine\Type\WorkEntryIdType
+      work_entry_id: App\WorkEntry\Infrastructure\Doctrine\Type\WorkEntryIdType
       user_email: App\User\Infrastructure\Doctrine\Type\EmailType
       user_password: App\User\Infrastructure\Doctrine\Type\PasswordType
   orm:
@@ -27,8 +27,14 @@ doctrine:
 when@test:
   doctrine:
     dbal:
-      # "TEST_TOKEN" is typically set by ParaTest
-      dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+      url: '%env(resolve:DATABASE_URL)%'
+      driver: 'pdo_sqlite'
+      charset: UTF8
+      mapping_types:
+        binary: user_id
+      types:
+        user_id: App\Tests\Doctrine\Type\UserIdType
+        work_entry_id: App\Tests\Doctrine\Type\WorkEntryIdType
 
 when@prod:
   doctrine:

@@ -18,7 +18,7 @@ final class UserResponse extends Response
     ) {
     }
 
-    public static function fromEntity(object $entity): static
+    public static function fromEntity(object $entity): self
     {
         /* @var User $entity */
         return new self(

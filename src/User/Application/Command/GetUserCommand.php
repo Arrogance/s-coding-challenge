@@ -6,7 +6,7 @@ namespace App\User\Application\Command;
 
 use App\Common\Application\Command\Command;
 
-class GetUserCommand extends Command
+final class GetUserCommand extends Command
 {
     public function __construct(
         public readonly string $id,

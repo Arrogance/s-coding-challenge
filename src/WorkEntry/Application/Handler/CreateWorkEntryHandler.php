@@ -8,10 +8,10 @@ use App\Common\Application\Command\Command;
 use App\Common\Application\EventBus\EventBusInterface;
 use App\Common\Application\Handler\Handler;
 use App\Common\Domain\ValueObject\UserId;
-use App\Common\Domain\ValueObject\WorkEntryId;
 use App\WorkEntry\Application\Command\CreateWorkEntryCommand;
 use App\WorkEntry\Domain\Entity\WorkEntry;
 use App\WorkEntry\Domain\Repository\WorkEntryRepositoryInterface;
+use App\WorkEntry\Domain\ValueObject\WorkEntryId;
 
 final class CreateWorkEntryHandler extends Handler
 {
@@ -24,7 +24,7 @@ final class CreateWorkEntryHandler extends Handler
     public function handle(Command|CreateWorkEntryCommand $command): WorkEntry
     {
         $workEntry = new WorkEntry(
-            new WorkEntryId($command->id),
+            WorkEntryId::generate(),
             new UserId($command->userId),
             $command->startDate,
             $command->endDate

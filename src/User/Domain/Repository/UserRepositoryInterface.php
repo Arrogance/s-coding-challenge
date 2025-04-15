@@ -10,9 +10,9 @@ use App\User\Domain\ValueObject\Email;
 
 interface UserRepositoryInterface
 {
-    public function save(User $user): void;
+    public function save(User $user, bool $flush = true): void;
 
-    public function delete(User $user): void;
+    public function delete(User $user, bool $flush = true): void;
 
     public function findById(UserId $id): ?User;
 
@@ -22,4 +22,10 @@ interface UserRepositoryInterface
      * @return iterable<User>
      */
     public function findPaginated(int $offset, int $limit): iterable;
+
+    public function beginTransaction(): void;
+
+    public function commit(): void;
+
+    public function rollback(): void;
 }

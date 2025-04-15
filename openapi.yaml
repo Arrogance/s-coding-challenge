@@ -1,0 +1,451 @@
+openapi: 3.0.3
+info:
+  title: S-Coding-Challenge API
+  version: 1.0.0
+  description: API for user and work entry management
+
+paths:
+  /login:
+    post:
+      summary: Authenticate and get JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              example:
+                email: johndoe@example.com
+                password: S3cret123
+      responses:
+        '200':
+          description: JWT Token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              example:
+                name: Jane Doe
+                email: janedoe@example.com
+                password: SecurePass123
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: List users with pagination
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Paginated list of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUsers'
+
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Fully update a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+              example:
+                name: Jane Doe Updated
+                email: jane.updated@example.com
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      summary: Partially update a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+              example:
+                name: Jane Updated
+      responses:
+        '200':
+          description: User partially updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Soft delete a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successfully deleted
+
+  /users/{id}/password-reset:
+    post:
+      summary: Update a user's password
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [new_password]
+              properties:
+                new_password:
+                  type: string
+              example:
+                new_password: NewStrongPassword456
+      responses:
+        '204':
+          description: Password updated
+
+  /work-entries:
+    post:
+      summary: Create a new work entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [start_date, end_date]
+              properties:
+                start_date:
+                  type: string
+                  format: date-time
+                end_date:
+                  type: string
+                  format: date-time
+              example:
+                start_date: '2025-04-13T08:00:00Z'
+                end_date: '2025-04-13T16:00:00Z'
+      responses:
+        '201':
+          description: WorkEntry created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkEntry'
+
+    get:
+      summary: List authenticated user's work entries
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Paginated work entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWorkEntries'
+
+  /work-entries/{id}:
+    get:
+      summary: Get a work entry by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: WorkEntry found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkEntry'
+        '404':
+          description: WorkEntry not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Fully update a work entry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [start_date, end_date]
+              properties:
+                start_date:
+                  type: string
+                  format: date-time
+                end_date:
+                  type: string
+                  format: date-time
+              example:
+                start_date: '2025-04-13T09:00:00Z'
+                end_date: '2025-04-13T17:00:00Z'
+      responses:
+        '200':
+          description: WorkEntry updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkEntry'
+
+    patch:
+      summary: Partially update a work entry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_date:
+                  type: string
+                  format: date-time
+                end_date:
+                  type: string
+                  format: date-time
+              example:
+                end_date: '2025-04-13T18:00:00Z'
+      responses:
+        '200':
+          description: WorkEntry partially updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkEntry'
+
+    delete:
+      summary: Soft delete a work entry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successfully deleted
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    WorkEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PaginatedUsers:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            offset:
+              type: integer
+            limit:
+              type: integer
+            count:
+              type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    PaginatedWorkEntries:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            offset:
+              type: integer
+            limit:
+              type: integer
+            count:
+              type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkEntry'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string

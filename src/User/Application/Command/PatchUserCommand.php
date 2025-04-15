@@ -6,7 +6,7 @@ namespace App\User\Application\Command;
 
 use App\Common\Application\Command\Command;
 
-class PatchUserCommand extends Command
+final class PatchUserCommand extends Command
 {
     public function __construct(
         public readonly string $id,

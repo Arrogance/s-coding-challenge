@@ -6,7 +6,7 @@ namespace App\User\Application\Command;
 
 use App\Common\Application\Command\Command;
 
-class LoginCommand extends Command
+final class LoginCommand extends Command
 {
     public function __construct(
         public readonly string $email,

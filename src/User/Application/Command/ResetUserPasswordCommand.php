@@ -6,7 +6,7 @@ namespace App\User\Application\Command;
 
 use App\Common\Application\Command\Command;
 
-class ResetUserPasswordCommand extends Command
+final class ResetUserPasswordCommand extends Command
 {
     public function __construct(
         public readonly string $id,

@@ -6,10 +6,10 @@ services:
       dockerfile: Dockerfile
     container_name: "${APP_NAME:-symfony}-app"
     ports:
-      # Local port => container port
       - "${DOCKER_APP_PORT:-8000}:8000"
     depends_on:
       - mysql
+      - valkey
 
   consumer:
     build:

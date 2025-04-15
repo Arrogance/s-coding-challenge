@@ -1,6 +1,6 @@
 framework:
   messenger:
-    failure_transport: failed
+#    failure_transport: failed
     default_bus: messenger.bus.default
 
     transports:
@@ -9,16 +9,15 @@ framework:
         options:
           stream: messenger
 
-      failed:
-        dsn: 'doctrine://default'
-
     routing:
-      'App\Common\Contract\Event\UserWorkEntryCreatedEvent': async
+      'App\Common\Domain\Event\UserDeletedEvent': async
 
-# when@test:
-#    framework:
-#        messenger:
-#            transports:
-#                # replace with your transport name here (e.g., my_transport: 'in-memory://')
-#                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
-#                async: 'in-memory://'
+when@test:
+  framework:
+    messenger:
+      transports:
+        test_async:
+          dsn: 'in-memory://'
+
+      routing:
+        'App\Common\Domain\Event\UserDeletedEvent': test_async

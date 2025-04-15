@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Common\Infrastructure\CommandBus;
 
 use App\Common\Application\Command\Command;
+use App\Common\Application\CommandBus\CommandBusInterface;
 use App\Common\Application\CommandBus\Exception\NoHandlerFoundForCurrentCommandException;
 use App\Common\Application\CommandBus\Middleware\MiddlewareInterface;
 use App\Common\Application\Handler\Handler;
 
-class CommandBus implements \App\Common\Application\CommandBus\CommandBusInterface
+class CommandBus implements CommandBusInterface
 {
     /**
      * @var array<Handler>
