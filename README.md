@@ -136,6 +136,12 @@ In the `test` environment, messages are dispatched synchronously using the `in-m
 *   Tactical CQRS: Queries and commands are handled via separate handlers, even though a single CommandBus is used. This enables scalability without overengineering.
 *   Except for Symfony-specific code within the `Infrastructure/Symfony` layer, the rest of the application remains framework-agnostic. Even Value Objects using Symfony UID do not expose Symfony-specific internals.
 
+🔐 Access & Security Model
+--------------------------
+
+*   The `User` endpoints (e.g., create, update, delete) are not protected by authentication. This is intentional and aligns with an architecture where user management is handled internally (e.g., by an admin panel, another trusted backend service, or internal automation).
+*   The `WorkEntry` endpoints are protected by authentication and require a valid JWT. This reflects a typical frontend-facing design, where authenticated users can track or view their own work entries.
+*   The architecture makes it easy to later add role-based authorization if needed. This intentional distinction also demonstrates different types of service exposure (internal vs. client-facing) within the same codebase.
 
 🧭 Application Flow Example (Async Event)
 -----------------------------------------
