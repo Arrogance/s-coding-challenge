@@ -24,4 +24,4 @@ jobs:
         run: composer install --no-progress --no-scripts --prefer-dist
 
       - name: Run PHPUnit tests
-        run: APP_ENV=test php bin/phpunit --testdox
+        run: APP_ENV=test php vendor/bin/phpunit --testdox
