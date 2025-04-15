@@ -25,19 +25,23 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | b
     && apt-get update \
     && apt-get install -y symfony-cli
 
-# Set working directory
+# Set working directory as root
 WORKDIR /var/www/html
 
-# Copy project files into the container
+# Copy project files
 COPY . .
 
-# Set ownership for the project (if needed)
 RUN mkdir -p /var/www/.symfony5 && \
-  chown -R www-data:www-data /var/www/.symfony5 /var/www/html
+    chown -R www-data:www-data /var/www /var/www/.symfony5
 
-# Install PHP dependencies via Composer
+# Fix permissions AFTER copy
+RUN chown -R www-data:www-data /var/www/html
+
+# Switch user after permissions are fixed
 USER www-data
-RUN composer install
+
+# Install Composer deps as www-data
+RUN composer install --no-interaction
 
 # Default command: run Symfony’s local web server in the container
 CMD ["symfony", "server:start", "--no-tls", "--port=8000", "--listen-ip=0.0.0.0", "--allow-http"]

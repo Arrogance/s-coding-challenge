@@ -9,13 +9,18 @@ endif
 # Extract project name from env file
 PROJECT_NAME := $(shell grep -m 1 '^APP_NAME=' $(ENV_FILE) | cut -d '=' -f2)
 
-# Docker Compose command
-COMPOSE_FILE = compose.yaml:compose.override.yaml
-DC_CMD     = COMPOSE_FILE=$(COMPOSE_FILE) docker compose -p $(PROJECT_NAME) --env-file $(ENV_FILE)
+# Compose files
+COMPOSE_FILES := -f compose.yaml
+ifneq ($(wildcard compose.override.yaml),)
+  COMPOSE_FILES += -f compose.override.yaml
+endif
+
+# Docker Compose commands
+DC_CMD     = docker compose $(COMPOSE_FILES) -p $(PROJECT_NAME) --env-file $(ENV_FILE)
 DC_RUN_PHP = $(DC_CMD) exec --user 1000:33 app
 
 # Default target
-all: build up install
+all: build up install migrations
 
 # Build containers
 build:
