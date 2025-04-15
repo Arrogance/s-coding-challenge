@@ -69,7 +69,7 @@ final class CreateWorkEntryControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(201, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        $this->assertEquals($userId, $data[0]['user_id']);
+        $this->assertEquals($userId, $data['user_id']);
     }
 
     public function testItThrowsExceptionOnInvalidJson(): void
