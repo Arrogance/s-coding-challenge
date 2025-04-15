@@ -154,6 +154,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+    patch:
+      summary: Partially update a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+              example:
+                name: Jane Updated
+      responses:
+        '200':
+          description: User partially updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
     delete:
       summary: Soft delete a user
       parameters:
@@ -239,6 +274,28 @@ paths:
                 $ref: '#/components/schemas/PaginatedWorkEntries'
 
   /work-entries/{id}:
+    get:
+      summary: Get a work entry by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: WorkEntry found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkEntry'
+        '404':
+          description: WorkEntry not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
     put:
       summary: Fully update a work entry
       parameters:
